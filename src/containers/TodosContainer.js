@@ -1,18 +1,17 @@
 import React, { useCallback } from 'react';
-import {connect, useDispatch, useSelector} from 'react-redux';
-import Todos from '../components/Todos';
+import {useSelector} from 'react-redux';
 import {changeInput, insert, toggle, remove} from '../modules/todos';
+import Todos from '../components/Todos';
+import {useActions} from '../lib/useActions';
+
 
 const TodosContainer = () => {
     const {input, todos} = useSelector(state => state.todos);
 
-    const dispatch = useDispatch();
-    const onChangeInput = useCallback(input=>dispatch(changeInput(input)), [dispatch]);
-    const onInsert = useCallback(todo=>dispatch(insert(todo)), [dispatch]);
-    const onToggle = useCallback(id=>dispatch(toggle(id)), [dispatch]);
-    const onRemove = useCallback(id=>dispatch(remove(id)), [dispatch]);
-
-    console.log(todos);
+    const [onChangeInput, onInsert, onToggle, onRemove] = useActions(
+        [changeInput, insert, toggle, remove], // 액션 생성 함수 배열
+        [] //deps
+    )
 
     return (
         <Todos 
@@ -26,5 +25,5 @@ const TodosContainer = () => {
     );
 };
 
-
-export default TodosContainer;
+// connect 함수가 자동으로 수행했던 최적화를 대신할 memo 함수가 필수이다.git 
+export default React.memo(TodosContainer); 
